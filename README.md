@@ -27,6 +27,7 @@ src/models.py              LightningModule base class + EmbeddingMLP + RNNClassi
 src/train.py               training entry point (standalone and W&B sweep agent)
 src/evaluate.py            one-time test evaluation of a chosen checkpoint, writes to W&B
 scripts/run_seeds.sh       re-run one config with seeds 42, 43, 44
+scripts/create_sweep.py    create a W&B sweep that runs with the current (venv) Python
 notebooks/01_data_exploration.ipynb   schema, label balance, lengths, OOV, examples
 notebooks/02_results.ipynb            pulls runs from W&B: tables + val acc vs lr plot
 tests/                     pytest unit tests (data pipeline + model shapes)
@@ -60,8 +61,10 @@ python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_
 wandb login
 ```
 
-`wandb agent` starts `python` from the PATH, so every terminal running an agent must have the
-venv activated. Otherwise the sweep runs use a different Python.
+On Windows, create sweeps with `python scripts/create_sweep.py ...` instead of `wandb sweep ...`
+(see step 4). `wandb agent` starts each run with a bare `python`, which on Windows resolves to the
+global Python installation even inside an activated venv. The script writes the venv's full
+interpreter path into the sweep.
 
 The first run downloads the dataset (Hugging Face cache) and GloVe (~380 MB, cached by gensim in
 `~/gensim-data`), then writes `cache/vocab_glove300.pt`. After that, every run starts in seconds.
@@ -118,11 +121,14 @@ fits (or try a larger batch, see design decisions).
 **4. Hyperparameter sweeps** (W&B grid, metric `val_loss` minimized):
 
 ```bash
-wandb sweep configs/sweep_mlp.yaml      # prints a sweep id
+python scripts/create_sweep.py configs/sweep_mlp.yaml   # prints the agent command
 wandb agent <entity>/nlp-hs26-project1/<sweep_id>
-wandb sweep configs/sweep_rnn.yaml
+python scripts/create_sweep.py configs/sweep_rnn.yaml
 wandb agent <entity>/nlp-hs26-project1/<sweep_id>
 ```
+
+On Linux/Colab, `wandb sweep configs/sweep_mlp.yaml` works as well. Both YAMLs set
+`project: nlp-hs26-project1`.
 
 **5. Seed runs for the chosen configurations** (W&B group `final-<arch>`):
 
@@ -189,8 +195,8 @@ architecture, seed mean/std and the validation-accuracy-vs-learning-rate plot.
 pip install -r requirements.txt && wandb login
 pytest -q
 python src/data.py
-wandb sweep configs/sweep_mlp.yaml && wandb agent <entity>/nlp-hs26-project1/<id>
-wandb sweep configs/sweep_rnn.yaml && wandb agent <entity>/nlp-hs26-project1/<id>
+python scripts/create_sweep.py configs/sweep_mlp.yaml && wandb agent <entity>/nlp-hs26-project1/<id>
+python scripts/create_sweep.py configs/sweep_rnn.yaml && wandb agent <entity>/nlp-hs26-project1/<id>
 # choose the best config per architecture by best_val_loss (notebooks/02_results.ipynb)
 bash scripts/run_seeds.sh --arch mlp --lr <lr> --hidden_dim <h> --dropout <d>
 bash scripts/run_seeds.sh --arch rnn --lr <lr> --hidden_dim <h> --dropout <d>

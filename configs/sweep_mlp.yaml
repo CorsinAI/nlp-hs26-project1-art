@@ -1,8 +1,10 @@
 # W&B grid sweep for Architecture 1 (EmbeddingMLP, shared scorer): 3 x 3 x 2 = 18 runs.
 # Run from the repository root:
-#   wandb sweep configs/sweep_mlp.yaml
+#   python scripts/create_sweep.py configs/sweep_mlp.yaml   (Windows: needed, see that script)
+#   wandb sweep configs/sweep_mlp.yaml                      (Linux/Colab: also fine)
 #   wandb agent <entity>/<project>/<sweep_id>
 # The agent calls: python src/train.py --arch=mlp --lr=... --hidden_dim=... --dropout=...
+project: nlp-hs26-project1
 program: src/train.py
 method: grid
 metric:
