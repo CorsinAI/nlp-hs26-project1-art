@@ -54,7 +54,7 @@ The first run downloads the dataset (Hugging Face cache) and GloVe (~380 MB, cac
 ### Google Colab
 
 ```python
-!git clone <your-repo-url> project && cd project
+!git clone https://github.com/CorsinAI/nlp-hs26-project1-art.git project
 %cd project
 !pip install -q -r requirements.txt      # Colab already has torch; pip keeps it
 import wandb; wandb.login()
