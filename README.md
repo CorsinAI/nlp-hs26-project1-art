@@ -48,6 +48,21 @@ export WANDB_ENTITY=<your-entity>    # optional; defaults to your W&B default en
 export WANDB_PROJECT=nlp-hs26-project1
 ```
 
+### Local Windows machine with an NVIDIA GPU (PowerShell)
+
+```powershell
+conda deactivate                         # if Anaconda's (base) is active
+.\.venv\Scripts\Activate.ps1             # prompt must show (.venv)
+pip install -r requirements.txt
+pip uninstall -y torch
+pip install torch --index-url https://download.pytorch.org/whl/cu128   # CUDA build
+python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0))"
+wandb login
+```
+
+`wandb agent` starts `python` from the PATH, so every terminal running an agent must have the
+venv activated. Otherwise the sweep runs use a different Python.
+
 The first run downloads the dataset (Hugging Face cache) and GloVe (~380 MB, cached by gensim in
 `~/gensim-data`), then writes `cache/vocab_glove300.pt`. After that, every run starts in seconds.
 
