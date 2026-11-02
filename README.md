@@ -13,6 +13,9 @@ Two architectures, both on top of the **same frozen GloVe 300d embeddings**:
 1. **EmbeddingMLP**: mean-pooled embeddings with a 2-layer ReLU classifier (only the classifier is trained).
 2. **RNNClassifier**: a 2-layer LSTM (or GRU) followed by a 2-layer ReLU classifier (RNN and classifier are trained).
 
+**W&B workspace (saved view):**
+https://forge.coreweave.com/wandb/corsinxhidber-hochschule-luzern/nlp-hs26-project1?nw=p7k3gnp4w4
+
 ## Repository structure
 
 ```
@@ -206,4 +209,4 @@ python src/evaluate.py --checkpoint <chosen checkpoint>
 ## Tools used
 
 **Claude Code** (Anthropic's AI coding assistant) was used to help write the code, tests and
-documentation of this project. I reviewed every file and can explain every design decision.
+documentation of this project.
