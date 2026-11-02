@@ -1,0 +1,21 @@
+# W&B grid sweep for Architecture 2 (RNNClassifier, 2-layer unidirectional LSTM): 3 x 2 x 2 = 12 runs.
+# Run from the repository root:
+#   wandb sweep configs/sweep_rnn.yaml
+#   wandb agent <entity>/<project>/<sweep_id>
+# The agent calls: python src/train.py --arch=rnn --cell=lstm --lr=... --hidden_dim=... --dropout=...
+program: src/train.py
+method: grid
+metric:
+  name: val_loss   # summary of val_loss = its minimum (see define_metric in train.py)
+  goal: minimize
+parameters:
+  arch:
+    value: rnn
+  cell:
+    value: lstm
+  lr:
+    values: [0.01, 0.001, 0.0001]
+  hidden_dim:
+    values: [128, 256]
+  dropout:
+    values: [0.0, 0.3]
