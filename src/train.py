@@ -83,7 +83,7 @@ def format_lr(lr: float) -> str:
 
 def make_run_name(args: argparse.Namespace) -> str:
     """Descriptive run name, e.g. 'rnn-lstm_lr1e-3_h256_do0.3_s42'."""
-    name = f"{arch_label(args)}_lr{format_lr(args.lr)}_h{args.hidden_dim}_do{args.dropout}_s{args.seed}"
+    name = f"{arch_label(args)}_lr{format_lr(args.lr)}_h{args.hidden_dim}_do{args.dropout:g}_s{args.seed}"  # :g -> 0 and 0.0 both give "do0"
     if args.scheduler != "constant":
         name += f"_{args.scheduler}"
     return name
